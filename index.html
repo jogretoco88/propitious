@@ -247,6 +247,264 @@ body.lightbox-open{overflow:hidden}
 .toast{position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:rgba(11,26,58,.95);backdrop-filter:blur(10px);border:1px solid var(--gold);color:var(--cream);padding:12px 20px;border-radius:999px;font-family:'Inter',sans-serif;font-size:12px;font-weight:500;box-shadow:0 12px 32px rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
 .toast.show{opacity:1;transform:translate(-50%,-8px)}
 .toast .ti{width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--aurora-deep);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ─── CONTACT FORM MODAL ─── */
+.cmodal{position:fixed;inset:0;background:rgba(11,26,58,.85);backdrop-filter:blur(8px);z-index:9500;display:none;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
+.cmodal.open{display:flex}
+.cpanel{
+  width:100%;max-width:430px;
+  background:linear-gradient(180deg,#1E3A6F 0%,var(--aurora-deep) 100%);
+  border-top-left-radius:24px;border-top-right-radius:24px;
+  border-top:1px solid rgba(212,168,87,.4);
+  display:flex;flex-direction:column;
+  max-height:92dvh;overflow:hidden;
+  animation:cpUp .4s cubic-bezier(.34,1.4,.64,1);
+  box-shadow:0 -20px 60px rgba(0,0,0,.6);
+}
+@keyframes cpUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.cp-handle{width:42px;height:4px;background:rgba(212,168,87,.4);border-radius:2px;margin:10px auto 4px;flex-shrink:0}
+.cp-head{padding:14px 22px 18px;border-bottom:1px solid rgba(212,168,87,.2);position:relative;flex-shrink:0;text-align:center}
+.cp-head .label{font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:4px;color:var(--gold);text-transform:uppercase;margin-bottom:4px}
+.cp-head h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-style:italic;font-weight:600;color:var(--cream);letter-spacing:.3px}
+.cp-head .sub{font-size:11px;color:var(--aurora-soft);margin-top:6px;opacity:.85;font-weight:400}
+.cp-close{position:absolute;top:12px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(212,168,87,.15);border:1px solid rgba(212,168,87,.4);color:var(--gold-lt);font-size:20px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.cp-close:hover{background:rgba(212,168,87,.3);transform:rotate(90deg)}
+.cp-close:active{transform:scale(.92)}
+
+.cp-scroll{flex:1;overflow-y:auto;padding:20px 22px 8px}
+
+/* Order recap (read-only mini summary at top of form) */
+.recap{
+  background:rgba(212,168,87,.08);
+  border:1px solid rgba(212,168,87,.25);
+  border-radius:14px;padding:12px 14px;margin-bottom:18px;
+}
+.recap-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:2.5px;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
+.recap-lines{font-size:12px;color:var(--cream);line-height:1.55;font-weight:500}
+.recap-lines .ln{display:flex;justify-content:space-between;gap:8px}
+.recap-lines .ln .nm{flex:1}
+.recap-lines .ln .amt{color:var(--gold-lt);font-family:'Cinzel',serif;font-size:11px;font-weight:600}
+.recap-total{margin-top:8px;padding-top:8px;border-top:1px dashed rgba(212,168,87,.3);display:flex;justify-content:space-between;align-items:center}
+.recap-total .tlbl{font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;color:var(--aurora-soft);text-transform:uppercase}
+.recap-total .tval{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:600;color:var(--gold-lt);letter-spacing:-.3px}
+
+/* Form fields */
+.field{margin-bottom:14px}
+.field label{
+  display:block;
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;
+  color:var(--gold-lt);text-transform:uppercase;
+  margin-bottom:7px;font-weight:500;
+}
+.field label .req{color:var(--mango);margin-left:3px}
+.field input, .field textarea{
+  width:100%;padding:13px 14px;
+  background:rgba(11,26,58,.6);
+  border:1.5px solid rgba(212,168,87,.25);
+  border-radius:12px;
+  color:var(--cream);
+  font-family:'Inter',sans-serif;font-size:14px;font-weight:500;
+  transition:border-color .2s,background .2s;
+  -webkit-appearance:none;
+}
+.field input:focus, .field textarea:focus{
+  outline:none;
+  border-color:var(--gold);
+  background:rgba(11,26,58,.85);
+}
+.field input::placeholder, .field textarea::placeholder{
+  color:rgba(168,200,232,.45);font-weight:400;
+}
+.field textarea{resize:vertical;min-height:70px;font-family:'Inter',sans-serif;line-height:1.4}
+.field.error input, .field.error textarea{border-color:var(--mango)}
+.field-hint{font-size:10.5px;color:var(--aurora-soft);opacity:.6;margin-top:5px;font-weight:400}
+.field-error{font-size:11px;color:var(--mango);margin-top:5px;font-weight:600;display:none}
+.field.error .field-error{display:block}
+
+/* Two-column row */
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Modal footer with send button */
+.cp-action{flex-shrink:0;padding:14px 22px 22px;background:rgba(11,26,58,.7);border-top:1px solid rgba(212,168,87,.2);box-shadow:0 -8px 24px rgba(0,0,0,.3)}
+.cp-send{
+  width:100%;display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:16px 18px;
+  background:linear-gradient(135deg,#25D366 0%,#128C5E 100%);
+  border:none;border-radius:14px;
+  color:white;cursor:pointer;
+  font-family:'Inter',sans-serif;font-weight:700;font-size:13px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  box-shadow:0 10px 28px rgba(37,211,102,.4),0 4px 10px rgba(0,0,0,.3);
+  transition:transform .2s,box-shadow .2s;
+}
+.cp-send:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(37,211,102,.5)}
+.cp-send:active{transform:scale(.97)}
+.cp-send svg{width:18px;height:18px}
+.cp-back{
+  width:100%;margin-top:10px;padding:12px;background:transparent;border:1px solid rgba(212,168,87,.3);border-radius:12px;color:var(--aurora-soft);font-family:'Cinzel',serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s
+}
+.cp-back:hover{background:rgba(212,168,87,.1);color:var(--gold-lt)}
+
+body.cmodal-open{overflow:hidden}
+
+/* ─── VIDEO CTA BUTTON ─── */
+.video-cta{
+  display:flex;align-items:center;gap:14px;
+  width:100%;padding:14px 16px;
+  margin:20px 0 4px;
+  background:linear-gradient(135deg,rgba(212,168,87,.18),rgba(212,168,87,.08));
+  border:1.5px solid rgba(212,168,87,.45);
+  border-radius:16px;
+  color:var(--cream);cursor:pointer;
+  font-family:inherit;text-align:left;
+  transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
+}
+.video-cta::before{
+  content:'';position:absolute;
+  top:-50%;right:-20%;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(212,168,87,.18),transparent 60%);
+  pointer-events:none;
+}
+.video-cta:hover{
+  transform:translateY(-2px);
+  border-color:var(--gold);
+  box-shadow:0 12px 28px rgba(212,168,87,.18);
+}
+.video-cta:active{transform:scale(.98)}
+
+.vc-play{
+  flex-shrink:0;width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dk) 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 18px rgba(212,168,87,.4);
+  position:relative;
+}
+.vc-play::after{
+  content:'';position:absolute;inset:-5px;border-radius:50%;
+  border:1.5px solid var(--gold);opacity:.6;
+  animation:videoPulse 2s ease-out infinite;
+}
+@keyframes videoPulse{
+  0%{transform:scale(.95);opacity:.6}
+  100%{transform:scale(1.3);opacity:0}
+}
+.vc-play svg{width:18px;height:18px;color:var(--aurora-deep);margin-left:2px}
+
+.vc-text{flex:1;min-width:0;position:relative;z-index:1}
+.vc-text .vc-label{
+  font-family:'Cinzel',serif;font-size:9.5px;letter-spacing:3px;
+  color:var(--gold);text-transform:uppercase;margin-bottom:2px;
+}
+.vc-text .vc-title{
+  font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600;
+  font-style:italic;color:var(--cream);line-height:1.1;letter-spacing:.3px;
+}
+.vc-text .vc-sub{font-size:11px;color:var(--aurora-soft);margin-top:2px;opacity:.75}
+
+.vc-arrow{flex-shrink:0;color:var(--gold-lt);position:relative;z-index:1}
+.vc-arrow svg{width:14px;height:14px}
+
+/* ─── VIDEO MODAL ─── */
+.vmodal{position:fixed;inset:0;background:rgba(11,26,58,.95);backdrop-filter:blur(12px);z-index:9700;display:none;align-items:center;justify-content:center;padding:50px 16px;animation:fadeIn .25s ease}
+.vmodal.open{display:flex}
+.vpanel{
+  width:100%;max-width:430px;
+  background:linear-gradient(160deg,rgba(30,58,111,.7),rgba(11,26,58,.98));
+  border:1px solid rgba(212,168,87,.45);
+  border-radius:24px;overflow:hidden;
+  box-shadow:0 24px 80px rgba(0,0,0,.7),0 0 60px rgba(212,168,87,.12);
+  animation:lbIn .35s cubic-bezier(.34,1.56,.64,1);
+  display:flex;flex-direction:column;
+}
+.vp-head{padding:14px 18px 12px;border-bottom:1px solid rgba(212,168,87,.2);text-align:center;position:relative}
+.vp-head .label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-bottom:2px}
+.vp-head h3{font-family:'Cormorant Garamond',serif;font-size:20px;font-style:italic;font-weight:600;color:var(--cream)}
+
+.vp-frame{
+  position:relative;width:100%;
+  aspect-ratio:9/16;
+  background:#000;
+  max-height:70dvh;
+}
+.vp-frame iframe{
+  width:100%;height:100%;border:0;display:block;
+}
+.vp-frame .vp-loading{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:var(--aurora-soft);font-family:'Cinzel',serif;font-size:11px;letter-spacing:2px;
+  text-transform:uppercase;pointer-events:none;
+}
+.vp-frame .vp-loading .spinner{
+  width:32px;height:32px;border-radius:50%;
+  border:2px solid rgba(212,168,87,.2);
+  border-top-color:var(--gold);
+  animation:spin 1s linear infinite;
+  margin-bottom:10px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.vp-frame .vp-loading-inner{display:flex;flex-direction:column;align-items:center;gap:4px}
+
+.vp-foot{
+  padding:12px 16px 14px;border-top:1px solid rgba(212,168,87,.2);
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  background:rgba(11,26,58,.4);
+}
+.vp-tip{font-size:10.5px;color:var(--aurora-soft);opacity:.8;flex:1}
+.vp-open-drive{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:1.5px;
+  color:var(--gold-lt);text-transform:uppercase;text-decoration:none;
+  padding:6px 10px;border-radius:8px;border:1px solid rgba(212,168,87,.35);
+  transition:all .2s;flex-shrink:0;
+}
+.vp-open-drive:hover{background:rgba(212,168,87,.12);border-color:var(--gold)}
+.vp-open-drive svg{width:11px;height:11px}
+
+.vp-close{
+  position:absolute;top:12px;right:12px;width:36px;height:36px;border-radius:50%;
+  background:rgba(212,168,87,.15);border:1px solid var(--gold);
+  color:var(--gold-lt);font-size:18px;line-height:1;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-weight:300;
+  transition:all .2s;z-index:5;
+}
+.vp-close:hover{background:rgba(212,168,87,.3);transform:rotate(90deg)}
+.vp-close:active{transform:scale(.92)}
+
+body.vmodal-open{overflow:hidden}
+
+
+/* Video error fallback state */
+.vp-error{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:24px 28px;text-align:center;
+  background:linear-gradient(160deg,rgba(30,58,111,.5),rgba(11,26,58,.95));
+}
+.vp-err-icon{font-size:42px;margin-bottom:12px;opacity:.85}
+.vp-err-title{
+  font-family:'Cormorant Garamond',serif;font-size:22px;font-style:italic;
+  font-weight:600;color:var(--gold-lt);margin-bottom:10px;letter-spacing:.3px;
+}
+.vp-err-msg{
+  font-size:12.5px;color:var(--aurora-soft);line-height:1.5;
+  margin-bottom:18px;max-width:300px;font-weight:400;
+}
+.vp-err-cta{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 22px;border-radius:999px;
+  background:linear-gradient(135deg,var(--gold),var(--gold-dk));
+  color:var(--aurora-deep);text-decoration:none;
+  font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;
+  box-shadow:0 8px 20px rgba(212,168,87,.4);
+  transition:transform .2s;
+}
+.vp-err-cta:hover{transform:translateY(-2px)}
+.vp-err-cta:active{transform:scale(.96)}
+.vp-err-cta svg{width:13px;height:13px}
+
 </style>
 </head>
 <body>
@@ -277,6 +535,21 @@ body.lightbox-open{overflow:hidden}
       <div class="feat"><span class="ico">🍦</span> Smooth & Creamy</div>
       <div class="feat"><span class="ico">🎁</span> Gift-Ready</div>
     </div>
+
+    <!-- Product video CTA -->
+    <button class="video-cta" type="button" onclick="openVideo()">
+      <div class="vc-play">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="vc-text">
+        <div class="vc-label">★ Product Showcase ★</div>
+        <div class="vc-title">Watch Our Product Video</div>
+        <div class="vc-sub">See Propitious Ice Cream in action</div>
+      </div>
+      <div class="vc-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </div>
+    </button>
 
     <div class="section-head">
       <div class="label">Place Your Order</div>
@@ -387,6 +660,109 @@ body.lightbox-open{overflow:hidden}
   </button>
 </div>
 
+
+<!-- VIDEO MODAL -->
+<div class="vmodal" id="vmodal" onclick="closeVideoBackdrop(event)">
+  <div class="vpanel">
+    <div class="vp-head">
+      <button class="vp-close" type="button" onclick="closeVideo()" aria-label="Close">×</button>
+      <div class="label">★ Product Showcase ★</div>
+      <h3>Propitious Ice Cream</h3>
+    </div>
+    <div class="vp-frame" id="vpFrame">
+      <div class="vp-loading">
+        <div class="vp-loading-inner">
+          <div class="spinner"></div>
+          <span>Loading video…</span>
+        </div>
+      </div>
+    </div>
+    <div class="vp-foot">
+      <span class="vp-tip">Trouble loading? Try opening in Drive →</span>
+      <a class="vp-open-drive" href="https://drive.google.com/file/d/1BMiWq9CxLPL2hHNnQBaLSWkqpN0YqCtx/view?usp=drivesdk" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Open in Drive ↗
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT FORM MODAL -->
+<div class="cmodal" id="cmodal">
+  <div class="cpanel">
+    <div class="cp-handle"></div>
+    <div class="cp-head">
+      <button class="cp-close" type="button" onclick="closeContactForm()" aria-label="Close">×</button>
+      <div class="label">★ One Last Step ★</div>
+      <h2>Delivery Information</h2>
+      <div class="sub">Help us serve you better — all fields required</div>
+    </div>
+
+    <div class="cp-scroll">
+
+      <!-- Order recap -->
+      <div class="recap">
+        <div class="recap-label">★ Order Summary ★</div>
+        <div class="recap-lines" id="recapLines"></div>
+        <div class="recap-total">
+          <span class="tlbl">Total</span>
+          <span class="tval" id="recapTotal">$0.00</span>
+        </div>
+      </div>
+
+      <!-- Business name -->
+      <div class="field" id="f-business">
+        <label>Business Name <span class="req">*</span></label>
+        <input type="text" id="i-business" placeholder="e.g. La Tiendita Mexican Market" autocomplete="organization">
+        <div class="field-hint">Name of your store, restaurant or business</div>
+        <div class="field-error">Please enter the business name</div>
+      </div>
+
+      <!-- Contact person -->
+      <div class="field" id="f-contact">
+        <label>Contact Person <span class="req">*</span></label>
+        <input type="text" id="i-contact" placeholder="e.g. María González" autocomplete="name">
+        <div class="field-hint">Who should we contact about this order?</div>
+        <div class="field-error">Please enter the contact person</div>
+      </div>
+
+      <!-- Phone (optional but encouraged) -->
+      <div class="field" id="f-phone">
+        <label>Phone Number</label>
+        <input type="tel" id="i-phone" placeholder="(970) 555-0123" autocomplete="tel" inputmode="tel">
+        <div class="field-hint">Optional · helps us confirm faster</div>
+      </div>
+
+      <!-- Delivery address -->
+      <div class="field" id="f-address">
+        <label>Delivery Address <span class="req">*</span></label>
+        <textarea id="i-address" placeholder="Street, City, State, ZIP" autocomplete="street-address"></textarea>
+        <div class="field-hint">Full address for delivery (street, city, state, ZIP)</div>
+        <div class="field-error">Please enter the delivery address</div>
+      </div>
+
+      <!-- Notes -->
+      <div class="field">
+        <label>Notes / Special Requests</label>
+        <textarea id="i-notes" placeholder="Preferred delivery time, dock instructions, etc."></textarea>
+        <div class="field-hint">Optional</div>
+      </div>
+
+    </div>
+
+    <div class="cp-action">
+      <button class="cp-send" type="button" onclick="confirmAndSend()">
+        <svg viewBox="0 0 24 24" fill="white">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+          <path d="M12 0C5.373 0 0 5.373 0 12c0 2.118.553 4.107 1.522 5.836L.057 23.571a.75.75 0 00.917.981l5.906-1.546A11.953 11.953 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.75c-1.953 0-3.775-.55-5.32-1.501l-.381-.228-3.954 1.037 1.001-3.863-.249-.396A9.713 9.713 0 012.25 12C2.25 6.615 6.615 2.25 12 2.25S21.75 6.615 21.75 12 17.385 21.75 12 21.75z"/>
+        </svg>
+        Confirm &amp; Send Order
+      </button>
+      <button class="cp-back" type="button" onclick="closeContactForm()">← Back to Order</button>
+    </div>
+  </div>
+</div>
+
 <!-- LIGHTBOX -->
 <div class="lightbox" id="lightbox" onclick="closeFlavor(event)">
   <button class="lightbox-close" type="button" onclick="closeFlavor(event,true)" aria-label="Close">×</button>
@@ -494,48 +870,123 @@ function updateOrderBar(){
   }
 }
 
-function sendOrder(){
+function buildOrderLines(){
   const lines = [];
-  let totalQty = 0;
-  let totalAmt = 0;
-
+  let totalQty = 0, totalAmt = 0;
   Object.entries(order).forEach(([f, q]) => {
     if (q > 0){
       const info = FLAVOR_INFO[f];
       const unitWord = mode === 'unit' ? (q === 1 ? 'unit' : 'units') : (q === 1 ? 'box' : 'boxes');
       const lineAmt = q * (mode === 'unit' ? PRICE_UNIT : PRICE_BOX);
       const breakdown = mode === 'box' ? ` (${q*UNITS_PER_BOX} pcs)` : '';
-      lines.push(`${info.emoji} ${info.name}: ${q} ${unitWord}${breakdown} — $${lineAmt.toFixed(2)}`);
+      lines.push({
+        emoji: info.emoji, name: info.name, qty: q, unitWord, breakdown, amt: lineAmt,
+        text: `${info.emoji} ${info.name}: ${q} ${unitWord}${breakdown} — $${lineAmt.toFixed(2)}`
+      });
       totalQty += q;
       totalAmt += lineAmt;
     }
   });
+  return { lines, totalQty, totalAmt };
+}
 
+function sendOrder(){
+  const { lines } = buildOrderLines();
   if (!lines.length){
     showToast('Please add at least one item');
     return;
   }
+  openContactForm();
+}
 
+function openContactForm(){
+  const { lines, totalQty, totalAmt } = buildOrderLines();
+  // Populate the recap
+  const recapHtml = lines.map(l =>
+    `<div class="ln"><span class="nm">${l.emoji} ${l.name} × ${l.qty} ${l.unitWord}${l.breakdown}</span><span class="amt">$${l.amt.toFixed(2)}</span></div>`
+  ).join('');
+  document.getElementById('recapLines').innerHTML = recapHtml;
+  document.getElementById('recapTotal').textContent = '$' + totalAmt.toFixed(2);
+
+  document.getElementById('cmodal').classList.add('open');
+  document.body.classList.add('cmodal-open');
+}
+
+function closeContactForm(){
+  document.getElementById('cmodal').classList.remove('open');
+  document.body.classList.remove('cmodal-open');
+}
+
+function validateField(id, required){
+  const field = document.getElementById('f-' + id);
+  const input = document.getElementById('i-' + id);
+  const value = input.value.trim();
+  if (required && !value){
+    field.classList.add('error');
+    return false;
+  }
+  field.classList.remove('error');
+  return true;
+}
+
+function confirmAndSend(){
+  // Validate required fields
+  const okBusiness = validateField('business', true);
+  const okContact  = validateField('contact', true);
+  const okAddress  = validateField('address', true);
+  validateField('phone', false); // optional
+
+  if (!okBusiness || !okContact || !okAddress){
+    showToast('Please fill in all required fields');
+    // Scroll first error into view
+    const firstErr = document.querySelector('.field.error');
+    if (firstErr) firstErr.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  const business = document.getElementById('i-business').value.trim();
+  const contact  = document.getElementById('i-contact').value.trim();
+  const phone    = document.getElementById('i-phone').value.trim();
+  const address  = document.getElementById('i-address').value.trim();
+  const notes    = document.getElementById('i-notes').value.trim();
+
+  const { lines, totalQty, totalAmt } = buildOrderLines();
   const totalWord = mode === 'unit' ? (totalQty === 1 ? 'unit' : 'units') : (totalQty === 1 ? 'box' : 'boxes');
 
-  const message =
-`Hello! 👋
+  const messageParts = [
+    'Hello! 👋',
+    '',
+    "I'd like to place a new order for *Propitious Ice Cream*:",
+    '',
+    '*📦 ORDER DETAILS*',
+    ...lines.map(l => l.text),
+    '— — — — — — — — — — —',
+    `*Total: ${totalQty} ${totalWord} · $${totalAmt.toFixed(2)}*`,
+    '',
+    '*🏢 BUSINESS INFORMATION*',
+    `Business: ${business}`,
+    `Contact: ${contact}`,
+  ];
+  if (phone) messageParts.push(`Phone: ${phone}`);
+  messageParts.push(
+    '',
+    '*📍 DELIVERY ADDRESS*',
+    address
+  );
+  if (notes){
+    messageParts.push('', '*📝 NOTES*', notes);
+  }
+  messageParts.push('', 'Please confirm availability and next steps. Thank you!');
 
-I'd like to place an order for *Propitious Ice Cream*:
-
-${lines.join('\n')}
-
-— — — — — — — — — — —
-*Total: ${totalQty} ${totalWord} · $${totalAmt.toFixed(2)}*
-
-Please confirm availability and next steps. Thank you!`;
-
-  // Encode message and try to inject it into wa.link
-  // wa.link short URLs don't accept text parameters, so we use wa.me with the phone
+  const message = messageParts.join('\n');
   const encodedMsg = encodeURIComponent(message);
-  const phone = '19709040722';
-  const waUrl = `https://wa.me/${phone}?text=${encodedMsg}`;
+  const phoneNum = '19709040722';
+  const waUrl = `https://wa.me/${phoneNum}?text=${encodedMsg}`;
   window.open(waUrl, '_blank');
+
+  // Show success toast and close form
+  showToast('Opening WhatsApp...');
+  setTimeout(() => closeContactForm(), 500);
 }
 
 /* ─── Flavor detail lightbox ─── */
@@ -564,12 +1015,32 @@ function closeFlavor(e, force){
 }
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape'){
+    const vm = document.getElementById('vmodal');
+    if (vm.classList.contains('open')){
+      closeVideo();
+      return;
+    }
+    const cm = document.getElementById('cmodal');
+    if (cm.classList.contains('open')){
+      closeContactForm();
+      return;
+    }
     const lb = document.getElementById('lightbox');
     if (lb.classList.contains('open')){
       lb.classList.remove('open');
       document.body.classList.remove('lightbox-open');
     }
   }
+});
+document.getElementById('cmodal').addEventListener('click', e => {
+  if (e.target.id === 'cmodal') closeContactForm();
+});
+
+// Clear field error styling as user types
+['business','contact','address'].forEach(id => {
+  document.getElementById('i-' + id).addEventListener('input', () => {
+    document.getElementById('f-' + id).classList.remove('error');
+  });
 });
 
 /* Toast */
@@ -581,6 +1052,69 @@ function showToast(msg){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
+/* ─── PRODUCT VIDEO ─── */
+const VIDEO_FILE_ID = '1BMiWq9CxLPL2hHNnQBaLSWkqpN0YqCtx';
+const VIDEO_EMBED_URL = `https://drive.google.com/file/d/${VIDEO_FILE_ID}/preview`;
+const VIDEO_DIRECT_URL = `https://drive.google.com/file/d/${VIDEO_FILE_ID}/view?usp=drivesdk`;
+let videoLoadTimer = null;
+
+function openVideo(){
+  const frame = document.getElementById('vpFrame');
+  // Reset frame with spinner + iframe
+  frame.innerHTML = `
+    <div class="vp-loading" id="vpLoading">
+      <div class="vp-loading-inner">
+        <div class="spinner"></div>
+        <span>Loading video…</span>
+      </div>
+    </div>
+    <iframe id="vpIframe" src="${VIDEO_EMBED_URL}" allow="autoplay; encrypted-media; fullscreen" allowfullscreen frameborder="0" style="opacity:0;transition:opacity .35s"></iframe>
+  `;
+
+  const iframe = document.getElementById('vpIframe');
+  const loading = document.getElementById('vpLoading');
+
+  // When iframe finishes loading: fade in iframe, fade out spinner
+  iframe.addEventListener('load', () => {
+    iframe.style.opacity = '1';
+    if (loading) loading.style.display = 'none';
+    if (videoLoadTimer) clearTimeout(videoLoadTimer);
+  });
+
+  // Fallback: after 12 seconds, if still loading, show an alternative state
+  if (videoLoadTimer) clearTimeout(videoLoadTimer);
+  videoLoadTimer = setTimeout(() => {
+    // Show error / alt state inside the frame
+    frame.innerHTML = `
+      <div class="vp-error">
+        <div class="vp-err-icon">⚠️</div>
+        <div class="vp-err-title">Video can't load here</div>
+        <div class="vp-err-msg">
+          This usually means the video is still being processed by Google Drive, or its sharing settings need adjustment. You can watch it directly on Drive:
+        </div>
+        <a href="${VIDEO_DIRECT_URL}" target="_blank" rel="noopener" class="vp-err-cta">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Watch on Google Drive
+        </a>
+      </div>
+    `;
+  }, 12000);
+
+  document.getElementById('vmodal').classList.add('open');
+  document.body.classList.add('vmodal-open');
+}
+
+function closeVideo(){
+  document.getElementById('vmodal').classList.remove('open');
+  document.body.classList.remove('vmodal-open');
+  // Stop video by removing the iframe entirely
+  document.getElementById('vpFrame').innerHTML = '';
+  if (videoLoadTimer) { clearTimeout(videoLoadTimer); videoLoadTimer = null; }
+}
+function closeVideoBackdrop(e){
+  if (e.target.id === 'vmodal') closeVideo();
+}
+
 </script>
 </body>
 </html>
